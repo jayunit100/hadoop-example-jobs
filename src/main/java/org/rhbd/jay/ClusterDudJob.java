@@ -42,7 +42,10 @@ public class ClusterDudJob  {
 		protected void setup(Context context) throws IOException,
 				InterruptedException {
 			super.setup(context);
-			for (int i = 0; i < 1000; i++) {
+			//For pipelines that might have lots of counters,
+			//replace with 1000 to ensure that the counters limit
+			//is large enough.
+			for (int i = 0; i < 10; i++) {
 				context.getCounter("test_counters_", i + "").increment(1);
 			}
 			//memory!
