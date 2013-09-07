@@ -4,7 +4,6 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -21,9 +20,10 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
-import org.junit.runners.JUnit4;
+import org.junit.runner.JUnitCore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.Lists;
 
 /**
@@ -115,14 +115,11 @@ public class ClusterDudJob  {
 		@Override
 		public List<InputSplit> getSplits(JobContext arg0) throws IOException {
 			// TODO Auto-generated method stub
-			CustomInputSplit ci = new CustomInputSplit();
+			DudInputSplit ci = new DudInputSplit();
 			log.info("Returning a single input");
-
 			List<InputSplit> l = Lists.newArrayList();
-
 			l.add(new DudInputSplit());
 			return l;
-
 		}
 
 	}
@@ -134,13 +131,7 @@ public class ClusterDudJob  {
 		protected void setup(Context context) throws java.io.IOException,
 				InterruptedException {
 			log.info("Just having a coffee."); // to test logging framework
-			log.info("Asserting some jars " + Tuple.class.getName()); // to test
-																		// logging
-																		// framework
-			log.info("Asserting some jars " + JUnit4.class.getCanonicalName()); // to
-																				// test
-																				// logging
-																				// framework
+			log.info("Asserting some jars " + JUnitCore.class.getCanonicalName()); // to
 			// any other weird tests worth doing?
 		};
 	}
@@ -148,8 +139,7 @@ public class ClusterDudJob  {
 	public Job getJob(String[] args, Configuration conf) throws IOException {
 		Job job = new Job(conf, "Dud Job");
 
-		HadoopUtils.deleteIfExists(FileSystem.get(conf), new Path(
-				"dud"));
+		FileSystem.get(conf).delete(new Path("dud"));
 		job.setJarByClass(ClusterDudJob.class);
 		job.setMapperClass(ClusterDudJob.Map.class);
 		job.setReducerClass(ClusterDudJob.Red.class);
@@ -175,13 +165,11 @@ public class ClusterDudJob  {
 			// TODO Auto-generated constructor stub
 		}
 
-		@Override
 		public void readFields(DataInput arg0) throws IOException {
 			// TODO Auto-generated method stub
 
 		}
 
-		@Override
 		public void write(DataOutput arg0) throws IOException {
 			// TODO Auto-generated method stub
 
