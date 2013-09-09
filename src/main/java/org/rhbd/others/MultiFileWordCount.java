@@ -142,9 +142,19 @@
         static int next=0;
         static int getPos=0;
         public long getPos() throws IOException {
-            log.info("getPos call #" + getPos++ + ": (indirect) Get pos : stream is -> "  + currentStream + " " + currentStream.available());
+
+            //seems like this is called sometimes even if 
+            //the stream is closed.
+            try{
+                //this triggers NPE if stream is closed. 
+                currentStream.available();
+            }
+            catch(Throwable t){
+                return 0;
+            }
             long currentOffset = currentStream == null ? 
                     0 : currentStream.getPos();
+            
             return offset + currentOffset;
         }
     
