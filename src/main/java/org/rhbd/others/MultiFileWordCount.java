@@ -132,14 +132,19 @@
           //open the first file
           Path file = paths[count];
           currentStream = fs.open(file);
+          if(currentStream==null)
+              throw new RuntimeException("!!! current stream null !!! ");
           currentReader = new BufferedReader(new InputStreamReader(currentStream));
         }
     
         public void close() throws IOException { }
-    
+
+        static int next=0;
+        static int getPos=0;
         public long getPos() throws IOException {
-            log.info("(indirect) Get pos : stream is -> "  + currentStream );
-            long currentOffset = currentStream == null ? 0 : currentStream.getPos();
+            log.info("getPos call #" + getPos++ + ": (indirect) Get pos : stream is -> "  + currentStream + " " + currentStream.available());
+            long currentOffset = currentStream == null ? 
+                    0 : currentStream.getPos();
             return offset + currentOffset;
         }
     
@@ -148,7 +153,8 @@
         }
     
         public boolean next(WordOffset key, Text value) throws IOException {
-          if(count >= split.getNumPaths())
+            log.info("next : " + next++ + " currentstream=" + currentStream);
+            if(count >= split.getNumPaths())
             return false;
     
           /* Read from file, fill in key and value, if we reach the end of file,
