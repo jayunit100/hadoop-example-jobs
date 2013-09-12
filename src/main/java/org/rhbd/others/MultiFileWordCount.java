@@ -134,10 +134,26 @@ new MultiFileLineRecordReader(
           
           //open the first file
           Path file = paths[count];
+          //this returns 
+          /**
+           * 
+			  @Override
+			  public FSDataInputStream open(Path f, int bufferSize) throws IOException {
+			    if (!exists(f)) {
+			      throw new FileNotFoundException(f.toString());
+			    }
+			    return new FSDataInputStream(
+			    	new BufferedFSInputStream(
+			        	new LocalFSFileInputStream(f), bufferSize));
+			  }
+           */
           currentStream = fs.open(file);
           if(currentStream==null)
               throw new RuntimeException("!!! current stream null !!! ");
-          currentReader = new BufferedReaderDebuggable(new InputStreamReaderDebuggable(currentStream));
+          currentReader = 
+        		  new BufferedReaderDebuggable(
+        		  	new InputStreamReaderDebuggable(
+        		  			currentStream));
         }
     
         public void close() throws IOException { }
@@ -168,9 +184,9 @@ new MultiFileLineRecordReader(
         public float getProgress() throws IOException {
           return ((float)getPos()) / totLength;
         }
-    
+        int next=0;
         public boolean next(WordOffset key, Text value) throws IOException {
-            log.info("next : " + next++ + " currentstream=" + currentStream);
+            log.info(next++ +" next : " + next++ + " currentstream=" + currentStream);
             if(count >= split.getNumPaths())
             return false;
     
@@ -180,28 +196,29 @@ new MultiFileLineRecordReader(
            */
           String line;
           do {
-              log.info("reading line");
+              log.info(next +"reading line");
             line = currentReader.readLine();
             if(line == null) {
               //close the file
-              log.info("closing stream line");
+              log.info(next + " closing stream line count=" + count +" splitstotal= " +split.getNumPaths());
               currentReader.close();
               offset += split.getLength(count);
               
               if(++count >= split.getNumPaths()) //if we are done
                 return false;
-              
+
+              log.info(next +" DONE CLOSING THE STREAM !!!!!!!!!!!!");
               //open a new file
               Path file = paths[count];
 
-              log.info("opening new stream");
+              log.info(next + " opening new stream " + file + " " + paths[count].getName());
               currentStream = fs.open(file);
               currentReader=new BufferedReader(new InputStreamReader(currentStream));
               key.fileName = file.getName();
             }
           } while(line == null);
           //update the key and value
-          log.info("(direct) getting stream pos");
+          log.info(next+ "  (direct) getting stream pos");
           key.offset = currentStream.getPos();
           value.set(line);
           
