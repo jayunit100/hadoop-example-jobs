@@ -63,8 +63,11 @@ public class WordCountSplits {
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(IntWritable.class);
     FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
-    FileInputFormat.setMaxInputSplitSize(job, Long.MIN_VALUE);
-    FileInputFormat.setMaxInputSplitSize(job, Long.MAX_VALUE);
+
+    FileInputFormat.setMaxInputSplitSize(job, Long.parseLong(args[2]));
+    FileInputFormat.setMaxInputSplitSize(job, Long.parseLong(args[3]));
+    
+    System.out.println("split min/max ---> " + args[2] + "/" + args[3]);
     FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
     System.exit(job.waitForCompletion(true) ? 0 : 1);
   }
