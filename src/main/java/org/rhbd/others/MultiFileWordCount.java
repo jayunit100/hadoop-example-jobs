@@ -95,7 +95,10 @@
         @Override
         public RecordReader<WordOffset,Text> getRecordReader(InputSplit split
             , JobConf job, Reporter reporter) throws IOException {
-          return new MultiFileLineRecordReader(job, (MultiFileSplit)split);
+          return 
+new MultiFileLineRecordReader(
+        job, 
+        (MultiFileSplit)split);
         }
       }
     
@@ -134,7 +137,7 @@
           currentStream = fs.open(file);
           if(currentStream==null)
               throw new RuntimeException("!!! current stream null !!! ");
-          currentReader = new BufferedReader(new InputStreamReader(currentStream));
+          currentReader = new BufferedReaderDebuggable(new InputStreamReaderDebuggable(currentStream));
         }
     
         public void close() throws IOException { }
@@ -142,19 +145,21 @@
         static int next=0;
         static int getPos=0;
         public long getPos() throws IOException {
-
+        	log.info("getPos()");
             //seems like this is called sometimes even if 
             //the stream is closed.
             try{
                 //this triggers NPE if stream is closed. 
                 currentStream.available();
+
             }
             catch(Throwable t){
-                return 0;
+            	t.printStackTrace();
+            	throw new RuntimeException("Failing: current stream ..." + t.getMessage());
             }
             long currentOffset = currentStream == null ? 
                     0 : currentStream.getPos();
-            
+            log.info("getPos()= "+offset + " " + currentOffset +" ");
             return offset + currentOffset;
         }
     
@@ -177,7 +182,7 @@
             line = currentReader.readLine();
             if(line == null) {
               //close the file
-                log.info("closing stream line");
+              log.info("closing stream line");
               currentReader.close();
               offset += split.getLength(count);
               
@@ -213,7 +218,7 @@
       }
     
       /**
-       * This Mapper is similar to the one in {@link WordCount.MapClass}.
+       * This Mapper is similar to the one in {@link WordCountSplits.MapClass}.
        */
       public static class MapClass extends MapReduceBase
         implements Mapper<WordOffset, Text, Text, LongWritable> {
