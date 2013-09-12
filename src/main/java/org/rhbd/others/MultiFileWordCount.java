@@ -145,7 +145,7 @@ new MultiFileLineRecordReader(
         static int next=0;
         static int getPos=0;
         public long getPos() throws IOException {
-        	log.info("getPos()");
+        	/**log.info("getPos()");
             //seems like this is called sometimes even if 
             //the stream is closed.
             try{
@@ -157,6 +157,8 @@ new MultiFileLineRecordReader(
             	t.printStackTrace();
             	throw new RuntimeException("Failing: current stream ..." + t.getMessage());
             }
+            **/
+        	log.info("!!!--- getting position of ::: currentStream ---!!! " + currentStream);
             long currentOffset = currentStream == null ? 
                     0 : currentStream.getPos();
             log.info("getPos()= "+offset + " " + currentOffset +" ");
