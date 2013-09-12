@@ -158,7 +158,6 @@ new MultiFileLineRecordReader(
     
         public void close() throws IOException { }
 
-        static int next=0;
         static int getPos=0;
         public long getPos() throws IOException {
         	/**log.info("getPos()");
