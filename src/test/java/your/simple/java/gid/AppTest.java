@@ -35,4 +35,12 @@ public class AppTest
     {
         assertTrue( true );
     }
+    
+    /**
+     * Another rigorous test.  ;-)
+     */
+    public void testAppAgain()
+    {
+    	assertFalse( false );
+    }
 }
