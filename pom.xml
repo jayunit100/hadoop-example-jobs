@@ -41,6 +41,12 @@
 			<artifactId>hadoop-core</artifactId>
 			<version>1.0.2</version>
 		</dependency>
+	    	<dependency>
+            <groupId>org.apache.mrunit</groupId>
+            <artifactId>mrunit</artifactId>
+            <version>1.0.0</version>
+            <classifier>hadoop1</classifier> 
+        </dependency>
 	</dependencies>
 	 <build>
     <!-- To define the plugin version in your parent POM -->
