@@ -39,7 +39,7 @@ import com.google.common.collect.Lists;
  * Purpose: Generate a mock data set of "pet store" transactions.
  * Input: The number of "transactions" to generate. 
  * Output: A series of text files, with one record per line, where 
- * each record 
+ * each record ???????????
  */
 public class PetStoreTransactionGeneratorJob {
 
@@ -163,8 +163,12 @@ public class PetStoreTransactionGeneratorJob {
 				@Override
 				public boolean nextKeyValue() throws IOException,
 						InterruptedException {
-					name=new Text(FIRSTNAMES[r.nextInt(FIRSTNAMES.length-1)]+"_"+LASTNAMES[r.nextInt(LASTNAMES.length-1)]);
-					transaction=new Text(PRODUCTS[r.nextInt(PRODUCTS.length-1)]);
+					name = new Text(
+							FIRSTNAMES[r.nextInt(FIRSTNAMES.length - 1)]
+									+ "_"
+									+ LASTNAMES[r.nextInt(LASTNAMES.length - 1)]);
+					transaction = new Text(
+							PRODUCTS[r.nextInt(PRODUCTS.length - 1)]);
 					
 					//continue returning a new mock transaction
 					//until we exceed the number of transactions.
@@ -176,7 +180,7 @@ public class PetStoreTransactionGeneratorJob {
 				public float getProgress() throws IOException,
 						InterruptedException {
 					// TODO Auto-generated method stub
-					return (float)soFar/(float)TRANSACTIONS;
+					return (float) soFar / (float) TRANSACTIONS;
 				}
 
 				
@@ -190,7 +194,7 @@ public class PetStoreTransactionGeneratorJob {
 			
 			List<InputSplit> l = Lists.newArrayList();
 			for(int i = 0 ; i < splits ; i++){
-				log.info(i+ " Adding a new input split of size " + transactionsPerSplit);
+				log.info(i + " Adding a new input split of size " + transactionsPerSplit);
 				l.add(new PetStoreTransactionGeneratorJob.TransactionInputSplit(/*transactionsPerSplit*/));
 			}
 			return l;
@@ -214,7 +218,7 @@ public class PetStoreTransactionGeneratorJob {
 		public long getLength() throws IOException, InterruptedException {
 			return 100;
 		}
-}
+	}
 	
 	public Job getJob(String[] args, Configuration conf) throws IOException {
 		Job job = new Job(conf, "Dud Job");
