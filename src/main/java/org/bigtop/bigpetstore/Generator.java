@@ -142,7 +142,7 @@ public class Generator extends
 		List<InputSplit> l = Lists.newArrayList();
 		for(int i = 0 ; i < splits ; i++){
 			log.info("generator log: " + i + " Adding a new input split of size " + transactionsPerSplit);
-			l.add(new MySplitter(/*transactionsPerSplit*/));
+			l.add(new MySplit(/*transactionsPerSplit*/));
 		}
 		return l;
 	}

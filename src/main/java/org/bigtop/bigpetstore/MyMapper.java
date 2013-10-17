@@ -21,7 +21,7 @@ class MyMapper extends
 		for (int i = 0; i < MAX; i++) {
 			context.getCounter("test_counters_", i + "").increment(1);
 		}
-		//memory!
+		//memory! ( is this just global variables managed by the Hadoop framework? )
 		context.getCounter("freemem", Runtime.getRuntime().freeMemory() + "").increment(1);
 		context.getCounter("username", System.getProperty("user.name")).increment(1);
 
@@ -30,9 +30,6 @@ class MyMapper extends
 	@Override
 	protected void map(Text key, Text value, Context context)
 			throws java.io.IOException, InterruptedException {
-		// added by Matt
-//		context.getCurrentKey();
-//		context.getCurrentValue();
 		context.write(key, value);
 	};
 }
