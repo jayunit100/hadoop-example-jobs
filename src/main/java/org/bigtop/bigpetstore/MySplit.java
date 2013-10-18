@@ -18,11 +18,13 @@ public class MySplit extends InputSplit {
 	
 	@Override
 	public String[] getLocations() throws IOException, InterruptedException {
+		System.out.println("getLocations in MySplit");
 		return new String[] {};
 	}
 
 	@Override
 	public long getLength() throws IOException, InterruptedException {
+		System.out.println("getLength in MySplit");
 		return 100;
 	}
 }

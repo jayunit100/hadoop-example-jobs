@@ -20,6 +20,11 @@ import com.google.common.collect.Lists;
  */
 public class Generator extends
 		FileInputFormat<Text,Text> {
+	
+	public Generator() {
+		System.out.println("calling default Generator constructor");
+	}
+	
 	final static Logger log = LoggerFactory
 			.getLogger(PetStoreTransactionGeneratorJob.class);
 
@@ -80,6 +85,7 @@ public class Generator extends
 	public RecordReader<Text, Text> createRecordReader(
 			InputSplit arg0, TaskAttemptContext arg1) throws IOException,
 			InterruptedException {
+		System.out.println("creating record reader");
 		return new RecordReader<Text, Text>() {
 			
 			@Override
@@ -144,6 +150,7 @@ public class Generator extends
 			log.info("generator log: " + i + " Adding a new input split of size " + transactionsPerSplit);
 			l.add(new MySplit(/*transactionsPerSplit*/));
 		}
+		System.out.println("splits done");
 		return l;
 	}
 

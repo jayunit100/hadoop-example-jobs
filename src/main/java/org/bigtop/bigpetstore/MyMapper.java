@@ -10,6 +10,10 @@ import org.apache.hadoop.mapreduce.Mapper;
 class MyMapper extends
 		Mapper<Text, Text, Text, Text> {
 
+	public MyMapper() {
+		System.out.println("calling default MyMapper constructor");	
+	}
+	
 	@Override
 	protected void setup(Context context) throws IOException,
 			InterruptedException {

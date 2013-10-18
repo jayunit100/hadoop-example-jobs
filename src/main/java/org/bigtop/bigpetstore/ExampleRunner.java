@@ -7,8 +7,9 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 public class ExampleRunner {
 
 	public static void main(String args[]) throws Exception {
-//		eg1();
-		eg2();
+		System.out.println(args + " " + args.length);
+		eg1();
+//		eg2();
 	}
 	
 	public static void eg1() throws Exception {
@@ -39,7 +40,6 @@ public class ExampleRunner {
 				TextOutputFormat.class);
 
 		set.runJob();
-		
 	}
 
 }
