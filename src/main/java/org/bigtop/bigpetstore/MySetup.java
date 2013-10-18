@@ -1,6 +1,8 @@
 package org.bigtop.bigpetstore;
 
 import java.io.IOException;
+import java.util.Date;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -26,8 +28,6 @@ public class MySetup {
 		System.out.println("MySetup constructor called");
 		this.job = new Job(conf, "Dud Job");
 
-		FileSystem.get(conf).delete(new Path("dud"));
-		
 		job.setJarByClass(MySetup.class); // what on earth does this do, and how do I know if it's right or wrong?
 		
 		job.setMapperClass(MyMapper.class);
@@ -41,7 +41,8 @@ public class MySetup {
 		job.setInputFormatClass(inClass);
 		job.setOutputFormatClass(outClass);
 		
-		FileOutputFormat.setOutputPath(job, new Path("dud"));
+		String date = new Date().toString();
+		FileOutputFormat.setOutputPath(job, new Path("dud/" + date));
 	}
 	
 	public void runJob() throws Exception {
