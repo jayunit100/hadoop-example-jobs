@@ -1,10 +1,9 @@
-package org.bigtop.bigpetstore;
+package org.bigtop.matt;
 
 import java.io.IOException;
 import java.util.Date;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.OutputFormat;
 import org.apache.hadoop.mapreduce.InputFormat;
@@ -16,7 +15,7 @@ public class MySetup {
 	
 	private final Job job;
 		
-	// I don't know if the warnings the Class<? extends ...> causes are important or not
+	// I don't know if the warnings the Class<? extends ...> clauses are important or not
 	public MySetup(Configuration conf,
 			       Class<? extends Mapper> mapperClass,
 			       Class<?> outkeyClass,
@@ -30,7 +29,7 @@ public class MySetup {
 
 		job.setJarByClass(MySetup.class); // what on earth does this do, and how do I know if it's right or wrong?
 		
-		job.setMapperClass(MyMapper.class);
+		job.setMapperClass(mapperClass);
 		//job.setReducerClass(PetStoreTransactionGeneratorJob.Red.class);
 		
 		job.setOutputKeyClass(outkeyClass);
@@ -42,7 +41,7 @@ public class MySetup {
 		job.setOutputFormatClass(outClass);
 		
 		String date = new Date().toString();
-		FileOutputFormat.setOutputPath(job, new Path("dud/" + date));
+		FileOutputFormat.setOutputPath(job, new Path("duds/" + date));
 	}
 	
 	public void runJob() throws Exception {

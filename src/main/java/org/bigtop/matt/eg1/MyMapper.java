@@ -1,4 +1,4 @@
-package org.bigtop.bigpetstore;
+package org.bigtop.matt.eg1;
 
 import java.io.IOException;
 
@@ -7,7 +7,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 
 
-class MyMapper extends
+public class MyMapper extends
 		Mapper<Text, Text, Text, Text> {
 
 	public MyMapper() {

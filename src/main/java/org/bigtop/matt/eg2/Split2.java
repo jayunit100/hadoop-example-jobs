@@ -1,4 +1,4 @@
-package org.bigtop.bigpetstore;
+package org.bigtop.matt.eg2;
 
 import java.io.IOException;
 
@@ -15,23 +15,13 @@ import org.apache.hadoop.mapreduce.InputSplit;
  * even if your methods do nothing, or you will got strange
  * and un-debuggable null pointer exceptions.
  */
-public class MySplit extends InputSplit implements Writable {
+public class Split2 extends InputSplit implements Writable {
 	
 	private static int count = 1;
 
-	public MySplit() {
+	public Split2() {
 		System.out.println("MySplit constructor called: " + count);
 		count++; // is this synchronized?  who knows ....
-	}
-	
-	public void readFields(DataInput arg0) throws IOException {
-//		throw new RuntimeException("unimplemented method MySplitter.readFields");
-		System.out.println("calling MySplitter.readFields ... for some reason");
-	}
-
-	public void write(DataOutput arg0) throws IOException {
-//		throw new RuntimeException("unimplemented method MySplitter.write");
-		System.out.println("calling MySplitter.write ... for some reason");
 	}
 	
 	@Override
@@ -43,6 +33,17 @@ public class MySplit extends InputSplit implements Writable {
 	@Override
 	public long getLength() throws IOException, InterruptedException {
 		System.out.println("getLength in MySplit");
-		return 100;
+		return 4;
 	}
+
+	public void readFields(DataInput arg0) throws IOException {
+//		throw new RuntimeException("unimplemented method MySplitter.readFields");
+		System.out.println("calling MySplitter.readFields ... for some reason");
+	}
+
+	public void write(DataOutput arg0) throws IOException {
+//		throw new RuntimeException("unimplemented method MySplitter.write");
+		System.out.println("calling MySplitter.write ... for some reason");
+	}
+	
 }
