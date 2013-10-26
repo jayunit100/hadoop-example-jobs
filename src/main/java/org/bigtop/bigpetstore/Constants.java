@@ -18,7 +18,8 @@ public class Constants {
 		OK(.1f),
 		CO(.4f);
 		
-		float probability;
+		final float probability;
+
 		private STATE(float probability) {
 			this.probability = probability;
 		}

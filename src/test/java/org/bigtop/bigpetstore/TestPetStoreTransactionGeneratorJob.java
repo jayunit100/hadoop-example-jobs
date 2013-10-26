@@ -2,7 +2,7 @@ package org.bigtop.bigpetstore;
 
 
 import org.junit.Test;
-import org.bigtop.bigpetstore.PetStoreTransactionGeneratorJob;
+import org.bigtop.bigpetstore.PetStoreJob;
 import static org.junit.Assert.*;
 
 public class TestPetStoreTransactionGeneratorJob {

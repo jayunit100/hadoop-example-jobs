@@ -10,7 +10,7 @@ import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.bigtop.bigpetstore.PetStoreTransactionGeneratorJob;
+import org.bigtop.bigpetstore.PetStoreJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,7 @@ public class Generator extends
 	}
 	
 	final static Logger log = LoggerFactory
-			.getLogger(PetStoreTransactionGeneratorJob.class);
+			.getLogger(PetStoreJob.class);
 
 	static final Integer TRANSACTIONS = 100;
 
