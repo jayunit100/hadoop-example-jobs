@@ -3,13 +3,13 @@ package org.bigtop.bigpetstore;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.InputSplit;
@@ -17,16 +17,13 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.RecordReader;
-import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
-import org.junit.runner.JUnitCore;
+import org.bigtop.bigpetstore.Constants.STATE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
 
 /**
  * This is a mapreduce implementation of a generator of a large
@@ -132,9 +129,9 @@ public class PetStoreTransactionGeneratorJob {
 		
 		@Override
 		public RecordReader<Text, Text> createRecordReader(
-				InputSplit arg0, TaskAttemptContext arg1) throws IOException,
+				final InputSplit inputSplit, TaskAttemptContext arg1) throws IOException,
 				InterruptedException {
-			return new RecordReader<Text, Text>() {
+				return new RecordReader<Text, Text>() {
 				
 				@Override
 				public void close() throws IOException {
@@ -143,7 +140,18 @@ public class PetStoreTransactionGeneratorJob {
 				
 				Text name, transaction;
 				Random r = new Random();
-
+				/**
+				 * We need the "state" information to generate records.
+				 * - Each state has a probability associated with it, so that
+				 * our data set can be realistic (i.e. Colorado should have more transactions
+				 * than rhode island).
+				 * 
+				 * - Each state also will its name as part of the key.
+				 * 
+				 * - This task would be distributed, for example, into 50 nodes
+				 * on a real cluster, each creating the data for a given state.
+				 */
+				STATE stateOfTransactions = ((TransactionInputSplit) inputSplit).state;
 				@Override
 				public Text getCurrentKey() throws IOException,
 						InterruptedException {
@@ -190,27 +198,38 @@ public class PetStoreTransactionGeneratorJob {
 
 		@Override
 		public List<InputSplit> getSplits(JobContext arg) throws IOException {
-			int transactionsPerSplit = arg.getConfiguration().getInt("transactions",10);
-			int splits = arg.getConfiguration().getInt("transaction_files",2);
-			
-			List<InputSplit> l = Lists.newArrayList();
-			for(int i = 0 ; i < splits ; i++){
-				log.info(i + " Adding a new input split of size " + transactionsPerSplit);
-				l.add(new PetStoreTransactionGeneratorJob.TransactionInputSplit(/*transactionsPerSplit*/));
+			int transactions = arg.getConfiguration().
+					getInt("transactions",-1);
+			if(transactions == -1 ){
+				throw new RuntimeException("# of Transactions not set in configuration object: " + arg.getConfiguration());
 			}
-			return l;
+
+			ArrayList<InputSplit> list = new ArrayList<InputSplit>();
+
+			/**
+			 * Generator class will take a state as input and generate all 
+			 * the data for that state.
+			 */
+			for(STATE s : STATE.values())
+			{
+				list.add(new TransactionInputSplit(s));
+			}
+			return list;
 		}
 
 	}
 	
 	public static class TransactionInputSplit extends InputSplit implements Writable {
-
-		public void readFields(DataInput arg0) throws IOException {
+		public STATE state;
+		public TransactionInputSplit(STATE s) {
+			super();
+			this.state=s;
 		}
 
-		public void write(DataOutput arg0) throws IOException {
-		}
-
+		/**
+		 * These are just hints to the JobTracker, so not a huge 
+		 * deal  (todo confirm).
+		 */
 		@Override
 		public String[] getLocations() throws IOException, InterruptedException {
 			return new String[] {};
@@ -218,16 +237,25 @@ public class PetStoreTransactionGeneratorJob {
 
 		@Override
 		public long getLength() throws IOException, InterruptedException {
-			return 100;
+			return -1;
+		}
+
+		/**
+		 * Why do inputsplits need these?
+		 */
+		public void readFields(DataInput arg0) throws IOException {
+		}
+		public void write(DataOutput arg0) throws IOException {
 		}
 	}
 	
-	public Job getJob(String[] args, Configuration conf) throws IOException {
-		Job job = new Job(conf, "Dud Job");
-
-		FileSystem.get(conf).delete(new Path("dud"));
+	public static Job createJob(Path output, Configuration conf) throws IOException {
+		Job job = new Job(conf, "PetStoreTransaction_ETL_"+System.currentTimeMillis());
+		//recursively delete the data set if it exists.
+		FileSystem.get(conf).delete(output,true);
 		job.setJarByClass(PetStoreTransactionGeneratorJob.class);
 		job.setMapperClass(PetStoreTransactionGeneratorJob.Map.class);
+		//use the default reducer
 		//job.setReducerClass(PetStoreTransactionGeneratorJob.Red.class);
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
@@ -235,12 +263,20 @@ public class PetStoreTransactionGeneratorJob {
 		job.setMapOutputValueClass(Text.class);
 		job.setInputFormatClass(TransactionGeneratorInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
-		FileOutputFormat.setOutputPath(job, new Path("dud"));
+		FileOutputFormat.setOutputPath(job, output);
 		return job;
 	}
-
+	
 	public static void main(String args[]) throws Exception {
-		new PetStoreTransactionGeneratorJob().getJob(args, new Configuration()).waitForCompletion(true);
+		if(args.length != 1)
+		{
+			System.err.println("USAGE : [number of records] [output path]");
+			System.exit(0);
+		}
+		else{
+			createJob(new Path(args[0]), new Configuration()).waitForCompletion(true);
+		}
+	
 	}
 
 }
