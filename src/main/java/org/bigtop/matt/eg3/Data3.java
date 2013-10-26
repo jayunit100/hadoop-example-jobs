@@ -1,6 +1,7 @@
 package org.bigtop.matt.eg3;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -17,13 +18,11 @@ public class Data3 {
 		String key, val;
 		for(int trans_id = 1; trans_id <= SIZE; trans_id++) {
 			key = join(",", "BigPetStore", state, trans_id + "");
-			// fields:
 			val = join(",",
 					   this.getLastName(),
 					   this.getFirstName(),
-					   this.getDay(),
-					   this.getTime() + "",
-					   this.getPrice() + "",
+					   this.getDate().toString(),
+					   (this.getPrice() / 100f) + "",
 					   this.getProduct());
 			this.data.add(new KeyVal<String, String>(key, val));
 		}
@@ -58,14 +57,10 @@ public class Data3 {
 		return PRODUCTS[this.r.nextInt(PRODUCTS.length - 1)];
 	}
 	
-	private String getDay() {
-		return DAYS[this.r.nextInt(DAYS.length - 1)];
+	private Date getDate() {
+		return new Date(this.r.nextInt());
 	}
 	
-	private Integer getTime() {
-		return this.r.nextInt(MINUTES_IN_DAY);
-	}
-
 	private Integer getPrice() {
 		return this.r.nextInt(MAX_PRICE);
 	}
@@ -122,15 +117,6 @@ public class Data3 {
 		"pet deterrent",
 		"flea collar",
 		"turtle food",
-	};
-	static final String[] DAYS = new String [] {
-		"Sunday",
-		"Monday",
-		"Tuesday",
-		"Wednesday",
-		"Thursday",
-		"Friday",
-		"Saturday"
 	};
 
 }
