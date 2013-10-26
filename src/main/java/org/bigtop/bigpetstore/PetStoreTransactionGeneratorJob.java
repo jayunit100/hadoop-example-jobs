@@ -39,7 +39,7 @@ import com.google.common.collect.Lists;
  * Purpose: Generate a mock data set of "pet store" transactions.
  * Input: The number of "transactions" to generate. 
  * Output: A series of text files, with one record per line, where 
- * each record 
+ * each record ???????????
  */
 public class PetStoreTransactionGeneratorJob {
 
@@ -56,11 +56,12 @@ public class PetStoreTransactionGeneratorJob {
 			//For pipelines that might have lots of counters,
 			//replace with 1000 to ensure that the counters limit
 			//is large enough.
-			for (int i = 0; i < 10; i++) {
+			final int MAX = 10;
+			for (int i = 0; i < MAX; i++) {
 				context.getCounter("test_counters_", i + "").increment(1);
 			}
 			//memory!
-			context.getCounter("freemem", Runtime.getRuntime().freeMemory()+"").increment(1);
+			context.getCounter("freemem", Runtime.getRuntime().freeMemory() + "").increment(1);
 			context.getCounter("username", System.getProperty("user.name")).increment(1);
 
 		}
@@ -78,7 +79,7 @@ public class PetStoreTransactionGeneratorJob {
 			FileInputFormat<Text,Text> {
 		static final Integer TRANSACTIONS = 100;
 
-		static String[] FIRSTNAMES = new String[]{
+		static final String[] FIRSTNAMES = new String[]{
 			"jay",
 			"john",
 			"jim",
@@ -97,7 +98,7 @@ public class PetStoreTransactionGeneratorJob {
 			"sanford",
 			"shawn"
 		};
-		static String[] LASTNAMES = new String[]{
+		static final String[] LASTNAMES = new String[]{
 			"vyas",
 			"macleroy",
 			"watt",
@@ -114,7 +115,7 @@ public class PetStoreTransactionGeneratorJob {
 			"walbright",
 			"samuelson"
 		};
-		static String[] PRODUCTS = new String[]{
+		static final String[] PRODUCTS = new String[]{
 			"dog food",
 			"cat food",
 			"fish food",
@@ -133,25 +134,25 @@ public class PetStoreTransactionGeneratorJob {
 		public RecordReader<Text, Text> createRecordReader(
 				InputSplit arg0, TaskAttemptContext arg1) throws IOException,
 				InterruptedException {
-			// TODO Auto-generated method stub
-			return new RecordReader() {
+			return new RecordReader<Text, Text>() {
+				
 				@Override
 				public void close() throws IOException {
 
 				}
+				
 				Text name, transaction;
 				Random r = new Random();
+
 				@Override
 				public Text getCurrentKey() throws IOException,
 						InterruptedException {
-					// TODO Auto-generated method stub
 					return name;				
 				}
 
 				@Override
 				public Text getCurrentValue() throws IOException,
 						InterruptedException {
-					// TODO Auto-generated method stub
 					return transaction;
 				}
 
@@ -159,12 +160,18 @@ public class PetStoreTransactionGeneratorJob {
 				public void initialize(InputSplit arg0, TaskAttemptContext arg1)
 						throws IOException, InterruptedException {
 				}
+				
 				int soFar=0;
+				
 				@Override
 				public boolean nextKeyValue() throws IOException,
 						InterruptedException {
-					name=new Text(FIRSTNAMES[r.nextInt(FIRSTNAMES.length-1)]+"_"+LASTNAMES[r.nextInt(LASTNAMES.length-1)]);
-					transaction=new Text(PRODUCTS[r.nextInt(PRODUCTS.length-1)]);
+					name = new Text(
+							FIRSTNAMES[r.nextInt(FIRSTNAMES.length - 1)]
+									+ "_"
+									+ LASTNAMES[r.nextInt(LASTNAMES.length - 1)]);
+					transaction = new Text(
+							PRODUCTS[r.nextInt(PRODUCTS.length - 1)]);
 					
 					//continue returning a new mock transaction
 					//until we exceed the number of transactions.
@@ -175,11 +182,9 @@ public class PetStoreTransactionGeneratorJob {
 				@Override
 				public float getProgress() throws IOException,
 						InterruptedException {
-					// TODO Auto-generated method stub
-					return (float)soFar/(float)TRANSACTIONS;
+					return (float) soFar / (float) TRANSACTIONS;
 				}
 
-				
 			};
 		}
 
@@ -190,13 +195,14 @@ public class PetStoreTransactionGeneratorJob {
 			
 			List<InputSplit> l = Lists.newArrayList();
 			for(int i = 0 ; i < splits ; i++){
-				log.info(i+ " Adding a new input split of size " + transactionsPerSplit);
+				log.info(i + " Adding a new input split of size " + transactionsPerSplit);
 				l.add(new PetStoreTransactionGeneratorJob.TransactionInputSplit(/*transactionsPerSplit*/));
 			}
 			return l;
 		}
 
 	}
+	
 	public static class TransactionInputSplit extends InputSplit implements Writable {
 
 		public void readFields(DataInput arg0) throws IOException {
@@ -214,7 +220,7 @@ public class PetStoreTransactionGeneratorJob {
 		public long getLength() throws IOException, InterruptedException {
 			return 100;
 		}
-}
+	}
 	
 	public Job getJob(String[] args, Configuration conf) throws IOException {
 		Job job = new Job(conf, "Dud Job");
