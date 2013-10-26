@@ -7,13 +7,16 @@ import org.bigtop.matt.eg1.Generator;
 import org.bigtop.matt.eg1.MyMapper;
 import org.bigtop.matt.eg2.Gen2;
 import org.bigtop.matt.eg2.Map2;
+import org.bigtop.matt.eg3.Gen3;
+import org.bigtop.matt.eg3.Map3;
 
 public class ExampleRunner {
 
 	public static void main(String args[]) throws Exception {
 		System.out.println(args + " " + args.length);
 //		eg1();
-		eg2();
+//		eg2();
+		eg3();
 	}
 	
 	public static void eg1() throws Exception {
@@ -43,6 +46,21 @@ public class ExampleRunner {
 				Gen2.class,
 				TextOutputFormat.class);
 
+		set.runJob();
+	}
+	
+	public static void eg3() throws Exception {
+		Configuration conf = new Configuration();
+		
+		MySetup set = new MySetup(conf, 
+				Map3.class,
+				Text.class, 
+				Text.class,
+				Text.class, 
+				Text.class,
+				Gen3.class,
+				TextOutputFormat.class);
+		
 		set.runJob();
 	}
 
