@@ -10,14 +10,8 @@ import org.apache.hadoop.mapreduce.InputSplit;
 
 
 public class Split extends InputSplit implements Writable {
-	public final String storeCode;
-	public final int numRecords;
-
-	public Split(String storeCode, int numRecords) {
-		super();
-		this.storeCode = storeCode;
-		this.numRecords = numRecords;
-	}
+	public   String storeCode;
+	public   int numRecords;
 
 	/**
 	 * These are just hints to the JobTracker, so not a huge 
@@ -37,7 +31,11 @@ public class Split extends InputSplit implements Writable {
 	 * Why do inputsplits need these?
 	 */
 	public void readFields(DataInput arg0) throws IOException {
+		this.numRecords = arg0.readInt();
+		this.storeCode = arg0.readLine();
 	}
 	public void write(DataOutput arg0) throws IOException {
+		arg0.writeInt(numRecords);
+		arg0.write(storeCode.getBytes());
 	}
 }

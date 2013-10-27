@@ -102,7 +102,11 @@ public class Format extends
 		 */
 		for(STATE s : STATE.values())
 		{
-			list.add(new Split(s.name(), (int) (totalRecords * s.probability)));
+			Split split = new Split();
+			split.storeCode=s.name();
+			split.numRecords=(int) (totalRecords * s.probability);
+			System.out.println(s.name() +" records : " + split.numRecords);
+			list.add(split);
 		}
 		return list;
 	}
