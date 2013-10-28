@@ -11,8 +11,10 @@ public class BigPetStore {
   	 	 * Part one: ETL of large, semistructured data into the
   	 	 * cluster.  
 		 */
+		Configuration c = new Configuration();
+		c.setInt("totalRecords", 100);
 		Job createInput = PetStoreJob.
-				createJob(new Path("petstoredata"), new Configuration());
+				createJob(new Path("petstoredata"), c);
 		createInput.waitForCompletion(true);
 
 		/**

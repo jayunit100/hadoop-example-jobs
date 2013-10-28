@@ -23,6 +23,7 @@ public class Data {
 					   this.getDate().toString(),
 					   (this.getPrice() / 100f) + "",
 					   this.getProduct());
+			System.out.println("adding "+key + " / " + size);
 			this.data.add(new KeyVal<String, String>(key, val));
 		}
 	}
