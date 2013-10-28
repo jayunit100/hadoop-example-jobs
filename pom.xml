@@ -15,12 +15,6 @@
 	</properties>
 
 	<dependencies>
-	<dependency>
-	<groupId>org.apache.hadoop</groupId>
-	<artifactId>hadoop-test</artifactId>
-	<version>1.0.1</version>
-</dependency>
-            
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
