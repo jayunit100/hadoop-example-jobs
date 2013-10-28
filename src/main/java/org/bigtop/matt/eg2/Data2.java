@@ -21,7 +21,7 @@ public class Data2 {
 	    }
 	}
 	
-	public Iterable<Pair<String, String>> getData() {
+	public List<Pair<String, String>> getData() {
 		return data;
 	}
 }

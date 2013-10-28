@@ -1,8 +1,6 @@
 package org.bigtop.matt.eg2;
 
-
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.hadoop.io.Text;
@@ -23,7 +21,7 @@ public class Gen2 extends InputFormat<Text, Text> {
 			InputSplit arg0, TaskAttemptContext arg1) throws IOException, InterruptedException {
 		return new RecordReader<Text, Text>() {
 			
-			private Iterator<Pair<String, String>> data = (new Data2()).getData();
+			private List<Pair<String, String>> data = (new Data2()).getData();
 			
 			@Override
 			public void close() throws IOException {
@@ -54,7 +52,6 @@ public class Gen2 extends InputFormat<Text, Text> {
              */
 			@Override
 			public boolean nextKeyValue() throws IOException, InterruptedException {
-				currentPair = data.next();
 				boolean notDone = index < data.size();
 				index++;
 				return notDone;
