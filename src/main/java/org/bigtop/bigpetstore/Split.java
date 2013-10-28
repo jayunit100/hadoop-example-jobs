@@ -32,8 +32,10 @@ public class Split extends InputSplit implements Writable {
 	 */
 	public void readFields(DataInput arg0) throws IOException {
 		this.numRecords = arg0.readInt();
-		this.storeCode = arg0.readLine();
+//		this.storeCode = arg0.readLine();
+		this.storeCode = "<crap!>";
 	}
+	
 	public void write(DataOutput arg0) throws IOException {
 		arg0.writeInt(numRecords);
 		arg0.write(storeCode.getBytes());
