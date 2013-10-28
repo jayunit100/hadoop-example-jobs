@@ -1,20 +1,15 @@
 package org.bigtop.bigpetstore;
 
-import java.io.DataInput;
-import java.io.DataOutput;
 import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.Writable;
-import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
-import org.bigtop.bigpetstore.Constants.STATE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,15 +65,15 @@ public class PetStoreJob {
 	}
 	
 	public static void main(String args[]) throws Exception {
-		if(args.length != 1)
+		if(args.length != 2)
 		{
 			System.err.println("USAGE : [number of records] [output path]");
 			System.exit(0);
 		}
-		else{
+		else {
 			Configuration conf = new Configuration();
-			conf.setInt("totalRecords", Integer.parseInt(args[1]));
-			createJob(new Path(args[0]), conf).waitForCompletion(true);
+			conf.setInt("totalRecords", Integer.parseInt(args[0]));
+			createJob(new Path(args[1]), conf).waitForCompletion(true);
 		}
 	
 	}
