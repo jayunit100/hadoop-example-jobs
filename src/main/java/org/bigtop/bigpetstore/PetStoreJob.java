@@ -64,18 +64,39 @@ public class PetStoreJob {
 		return job;
 	}
 	
-	public static void main(String args[]) throws Exception {
-		if(args.length != 2)
-		{
-			System.err.println("USAGE : [number of records] [output path]");
-			System.exit(0);
-		}
-		else {
-			Configuration conf = new Configuration();
-			conf.setInt("totalRecords", Integer.parseInt(args[0]));
-			createJob(new Path(args[1]), conf).waitForCompletion(true);
-		}
-	
+	public static void alternateMain() throws Exception {
+		/**
+  	 	 * Part one: ETL of large, semistructured data into the
+  	 	 * cluster.  
+		 */
+		Configuration c = new Configuration();
+		c.setInt("totalRecords", 100);
+		Job createInput = PetStoreJob.
+				createJob(new Path("petstoredata"), c);
+		createInput.waitForCompletion(true);
+
+		/**
+		 * Part two: Basic analytics using pig and hive. 
+		 */
+		
 	}
 
+	public static void main(String args[]) throws Exception {
+		final boolean dontRunAlternateMain = true;
+		if(dontRunAlternateMain) {
+			if(args.length != 2)
+			{
+				System.err.println("USAGE : [number of records] [output path]");
+				System.exit(0);
+			}
+			else {
+				Configuration conf = new Configuration();
+				conf.setInt("totalRecords", Integer.parseInt(args[0]));
+				createJob(new Path(args[1]), conf).waitForCompletion(true);
+			}
+		} else {
+			alternateMain();
+		}
+	}
+	
 }
