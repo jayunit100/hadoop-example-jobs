@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.bigtop.bigpetstore;
+package org.bigtop.bigpetstore.example;
 
 import java.io.DataInput;
 

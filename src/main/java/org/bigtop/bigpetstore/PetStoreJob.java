@@ -1,13 +1,13 @@
 package org.bigtop.bigpetstore;
 
 import java.io.IOException;
+import java.util.Date;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.slf4j.Logger;
@@ -31,27 +31,12 @@ public class PetStoreJob {
 	final static Logger log = LoggerFactory
 			.getLogger(PetStoreJob.class);
 
-	private static class Map extends
-			Mapper<Text, Text, Text, Text> {
-
-		@Override
-		protected void setup(Context context) throws IOException,
-				InterruptedException {
-			super.setup(context);
-		}
-
-		protected void map(Text key, Text value, Context context)
-				throws java.io.IOException, InterruptedException {
-			context.write(key, value);
-		};
-	}
-	
 	public static Job createJob(Path output, Configuration conf) throws IOException {
 		Job job = new Job(conf, "PetStoreTransaction_ETL_"+System.currentTimeMillis());
 		//recursively delete the data set if it exists.
 		FileSystem.get(conf).delete(output,true);
 		job.setJarByClass(PetStoreJob.class);
-		job.setMapperClass(PetStoreJob.Map.class);
+		job.setMapperClass(MyMapper.class);
 		//use the default reducer
 		//job.setReducerClass(PetStoreTransactionGeneratorJob.Red.class);
 		job.setOutputKeyClass(Text.class);
@@ -72,7 +57,7 @@ public class PetStoreJob {
 		Configuration c = new Configuration();
 		c.setInt("totalRecords", 100);
 		Job createInput = PetStoreJob.
-				createJob(new Path("petstoredata"), c);
+				createJob(new Path("petstoredata/" + (new Date()).toString()), c);
 		createInput.waitForCompletion(true);
 
 		/**
@@ -82,7 +67,7 @@ public class PetStoreJob {
 	}
 
 	public static void main(String args[]) throws Exception {
-		final boolean dontRunAlternateMain = true;
+		final boolean dontRunAlternateMain = false;
 		if(dontRunAlternateMain) {
 			if(args.length != 2)
 			{
