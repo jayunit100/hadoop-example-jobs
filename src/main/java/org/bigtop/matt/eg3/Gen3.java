@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.InputFormat;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.hadoop.mrunit.types.Pair;
 
 import com.google.common.collect.Lists;
 
@@ -19,9 +21,10 @@ public class Gen3 extends InputFormat<Text, Text> {
 	@Override
 	public RecordReader<Text, Text> createRecordReader(
 			InputSplit arg0, TaskAttemptContext arg1) throws IOException, InterruptedException {
+	    this.readSplitConfigs(arg1.getConfiguration());
 		return new RecordReader<Text, Text>() {
 			
-			private Iterator<KeyVal<String, String>> data = (new Data3("CT")).getData().iterator();
+			private Iterator<KeyVal<String, String>> data = (new Data3(records,"CT")).getData().iterator();
 			private KeyVal<String, String> currentRecord;
 			
 			@Override
@@ -67,12 +70,30 @@ public class Gen3 extends InputFormat<Text, Text> {
 		};
 	}
 
+	public enum props {
+	    bigpetstore_splits,
+	    bigpetstore_records_per_split
+	}
+
+	int splits ; int records;
+	public void readSplitConfigs(Configuration conf){
+	     splits = conf.getInt(props.bigpetstore_splits.name(),0);
+	     if(splits ==0 ){
+	         throw new RuntimeException("missing "+props.bigpetstore_splits);
+	     }
+	     records = conf.getInt(props.bigpetstore_records_per_split.name(),0);
+	     if(records ==0 ){
+             throw new RuntimeException("missing "+props.bigpetstore_records_per_split);
+         }
+	}
 	@Override
 	public List<InputSplit> getSplits(JobContext arg) throws IOException {
+		readSplitConfigs(arg.getConfiguration()); // sets splits/records
 		List<InputSplit> l = Lists.newArrayList();
-//		for(int i = 0; i < 10; i++) {
-			l.add(new Split3());
-//		}
+        
+		for(int i = 0; i < splits; i++) {
+			l.add(new Split3(splits, records));
+		}
 		return l;
 	}
 	

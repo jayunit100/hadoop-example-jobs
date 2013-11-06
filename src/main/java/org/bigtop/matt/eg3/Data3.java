@@ -5,16 +5,22 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import org.slf4j.Logger;
+
 
 public class Data3 {
 
 	private final List<KeyVal<String, String>> data;
 	private final Random r;
 
-	public Data3(String state) {
-		this.data = new ArrayList<KeyVal<String, String>>();
+	public Data3(int records, String state) {
+	    if (records == 0 ){
+	        throw new RuntimeException("Cant create a data iterator with no records (records==0) !");
+	    }
+	    System.out.println("Creating record r" + records);
+	    this.data = new ArrayList<KeyVal<String, String>>();
 		this.r = new Random();
-		int SIZE = 100;
+		int SIZE = records;
 		String key, val;
 		for(int trans_id = 1; trans_id <= SIZE; trans_id++) {
 			key = join(",", "BigPetStore", state, trans_id + "");
