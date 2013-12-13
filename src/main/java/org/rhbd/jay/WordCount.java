@@ -40,6 +40,8 @@ public class WordCount {
                        Context context
                        ) throws IOException, InterruptedException {
       int sum = 0;
+      
+      
       if(
               key.toString().contains("jeffvance") || 
               key.toString().contains("scottmaclellan") || 
@@ -49,6 +51,8 @@ public class WordCount {
           //just saw an erin ! lets make 
           context.getCounter("important_groups", "big_data_team").increment(1);
       }
+      
+      
       for (IntWritable val : values) {
         sum += val.get();
       }
